@@ -31,8 +31,16 @@ load_env do |host|
       ], [
                             "git clone git@github.com:chonglou/bodhi.git #{tmp}/bodhi"
                         ])
-      commands << "cd #{tmp}/utils && bundle install"
+      commands << "cd #{tmp}/bodhi && bundle install"
       commands << "cd #{tmp}/bodhi && rake install"
+
+      commands << path?("#{tmp}/daemon", [
+          "cd #{tmp}/daemon && git pull"
+      ], [
+                            "git clone git@github.com:chonglou/daemon.git #{tmp}/daemon"
+                        ])
+      commands << "cd #{tmp}/daemon && bundle install"
+      commands << "cd #{tmp}/daemon && rake install"
 
       host.execute commands
 

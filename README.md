@@ -13,7 +13,4 @@ Rails部署工具
 
 ## 常见问题
 
-###  运行“rake brahma:upgrade”失败 原因：貌似ssh找不到一些环境变量
-    cd /tmp/brahma/bodhi
-    bundle install
 
