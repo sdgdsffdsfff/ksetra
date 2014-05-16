@@ -36,8 +36,6 @@ load_env do |host|
         ]
         host.shared_paths.each { |p| commands << "ln -sv #{host.deploy_to}/shared/#{p} #{release}/#{p}" }
         commands += rbenv
-        commands << "cd #{release} && gem install bundler"
-        commands << 'rbenv rehash'
         commands << "cd #{release} && bundle install"
         commands << "echo NEW VERSION: $(basename #{release})"
         host.execute commands

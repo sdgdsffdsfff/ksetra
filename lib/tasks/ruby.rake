@@ -19,6 +19,8 @@ load_env do |host|
           commands += rbenv
           commands << "rbenv install -f -v  #{version}"
           commands << "rbenv global #{version}"
+          commands << 'rbenv rehash'
+          commands << 'gem install bundler'
           host.execute commands
         else
           puts '需要指定版本号'
