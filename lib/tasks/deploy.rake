@@ -1,6 +1,7 @@
 load_env do |host|
   namespace host.name do
     namespace :web do
+
       desc "初始化设置服务器[#{host.name}]"
       task :setup do
         host.execute [
@@ -20,7 +21,7 @@ load_env do |host|
 
       desc "清理服务器[#{host.name}]"
       task :destroy do
-        confirm('将会清理所有部署数据，确认要继续么') { host.execute ["rm -r #{host.deploy_to}"] }
+        confirm('将会清理所有部署数据，确认要继续么', -> { host.execute ["rm -r #{host.deploy_to}"] })
       end
 
       desc "部署服务器[#{host.name}]"
@@ -42,6 +43,8 @@ load_env do |host|
 
         confirm('版本更新成功，要继续么', -> {
           commands = rbenv
+          commands << "cd #{release} && RAILS_ENV=production rake assets:precompile"
+          commands << "cd #{release} && RAILS_ENV=production rake db:migrate"
           commands << "cd #{release} && puma -b 'unix://#{release}/tmp/web.sock?umask=0777' --pidfile #{release}/tmp/web.pid -e production -d config.ru"
           host.execute commands
           confirm('启动成功，要继续么', -> {
