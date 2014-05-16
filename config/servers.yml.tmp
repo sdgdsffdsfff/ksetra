@@ -1,0 +1,10 @@
+hostname: #主机名 可以有多台 但是全局唯一
+  ssh:
+    port: 22
+    user: 'deploy'
+    host: 'example.com'
+  domain: 'www.example.com'
+  deploy_to: '/var/www/www.example.com'
+  repository: 'git@github.com/example.git'
+  branch: 'master'
+  shared_paths: ['log', 'config/database.yml']
