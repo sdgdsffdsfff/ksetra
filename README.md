@@ -18,3 +18,6 @@ Rails部署工具
 
 ### bundle install失败
  * 由于gem版本冲突，需要运行bundle update
+
+### 数据库插入中文失败(错误字符集引起)
+    CREATE DATABASE IF NOT EXISTS your_db_name DEFAULT CHARACTER SET 'utf8'
