@@ -1,7 +1,21 @@
 load_env do |host|
   if host.repository.start_with?('git@github.com:chonglou/')
     namespace host.name do
-
+      desc '更新brahma 3rd'
+      task '3rd' do
+        tmp = '/tmp/brahma'
+        commands = []
+        commands << path?("#{tmp}/3rd", [
+            "cd #{tmp}/3rd && git pull"
+        ], [
+                              "git clone git@github.com:chonglou/3rd.git #{tmp}/3rd"
+                          ])
+        path = "#{host.deploy_to}/releases/current/public/3rd"
+        commands << path?(path, ["rm -r #{path}"])
+        commands << "mkdir -p #{path}"
+        commands << "cp -r #{tmp}/3rd/* #{path}"
+        host.execute commands
+      end
     end
   end
 
@@ -11,12 +25,6 @@ load_env do |host|
     task :upgrade do
       tmp = '/tmp/brahma'
       commands = []
-
-      commands << path?("#{tmp}/3rd", [
-          "cd #{tmp}/3rd && git pull"
-      ], [
-                            "git clone git@github.com:chonglou/3rd.git #{tmp}/3rd"
-                        ])
       commands += rbenv
       commands << path?("#{tmp}/utils", [
           "cd #{tmp}/utils && git pull"
