@@ -9,7 +9,7 @@ Rails部署工具
     rake -T #查看任务
 
 #### Brahma项目部署 依赖
-    apt-get install libmysqlclient-dev
+    apt-get install libmysqlclient-dev pwgen
 
 ## 常见问题
 
