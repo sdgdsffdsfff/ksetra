@@ -1,12 +1,11 @@
 require 'net/ssh'
 
-def confirm(message, yes=nil, no=nil)
+def yesno?(message)
   require 'highline/import'
-  if ask("#{message}?(y/n)  ") { |q| q.default = 'n' } == 'y'
-    yes.call if yes
-  else
-    no.call if no
-  end
+  ask("#{message}?(y/n)  ") { |q| q.default = 'n' } == 'y'
+end
+def confirm(message, yes=nil, no=nil)
+  yesno?(message) ? (yes.call if yes) : (no.call if no)
 end
 
 def rbenv
@@ -25,7 +24,7 @@ EOF;
   end
 end
 
-def path?(dir, commands1=[], commands2=[])
+def path?(dir, commands1=['echo NONE'], commands2=['echo NONE'])
   <<-BASH
 if [ -d "#{dir}" ]
 then
@@ -36,7 +35,7 @@ fi
   BASH
 end
 
-def file?(file, commands1, commands2)
+def file?(file, commands1=['echo NONE'], commands2=['echo NONE'])
   <<-BASH
 if [ -f "#{file}" ]
 then
