@@ -7,7 +7,6 @@ load_env do |host|
         host.execute [
                          sudo("mkdir -p #{host.deploy_to}"),
                          sudo("chown #{host.user}:#{host.user} #{host.deploy_to}"),
-                         sudo("chmod 700 #{host.deploy_to}"),
                          "mkdir -p #{host.deploy_to}/releases",
                          "git clone #{host.repository} #{host.deploy_to}/scm"
                      ]
@@ -45,15 +44,30 @@ load_env do |host|
           commands = rbenv
           commands << "cd #{release} && RAILS_ENV=production rake assets:precompile"
           commands << "cd #{release} && RAILS_ENV=production rake db:migrate"
-          commands << "cd #{release} && puma -b 'unix://#{release}/tmp/web.sock?umask=0777' --pidfile #{release}/tmp/web.pid -e production -d config.ru"
+          commands << puma_start(release)
           host.execute commands
           confirm('启动成功，要继续么', -> {
-            host.execute ["ln -sfv #{release} #{host.deploy_to}/releases/current"]
+            current = "#{host.deploy_to}/releases/current"
+            commands = [path?(current, puma_stop(current)<<"rm #{current}")]
+            commands << "ln -sv #{release} #{current}"
+            host.execute commands
           }, -> {
-            host.execute ["kill -s SIGTERM  $(cat #{release}/tmp/web.pid)", "rm #{release}/web.pid", "rm #{release}/web.sock"]
+            host.execute
             clean_f.call
           })
         }, clean_f)
+      end
+
+      def puma_start(path)
+        "cd #{path} && puma -b 'unix://#{path}/tmp/web.sock' --pidfile #{path}/tmp/web.pid -e production -d config.ru"
+      end
+
+      def puma_stop(path)
+        [
+            "kill -s SIGTERM  $(cat #{path}/tmp/web.pid)",
+            "rm #{path}/tmp/web.pid",
+            "rm #{path}/tmp/web.sock"
+        ]
       end
 
       desc "列出服务器[#{host.name}]上最近可运行的版本"
