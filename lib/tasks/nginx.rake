@@ -4,7 +4,7 @@ load_env do |host|
     desc "在服务器[#{host.name}]上的nginx配置文件样例"
     task :nginx do
       port = 80
-      ssl = []
+      ssl = nil
       if yesno?('启用SSL')
         port = 443
         ssl = [
@@ -32,7 +32,7 @@ server {
   listen       #{port};
   server_name  #{host.domain};
 
-  #{ssl.join "\n  "}
+  #{ssl.join( "\n  ") if ssl}
 
   location /assets  {
     alias #{host.deploy_to}/releases/current/public/assets;
@@ -41,9 +41,14 @@ server {
   }
 
   location / {
+    proxy_set_header  Host    $http_host;
+    proxy_set_header  X-Real-IP $remote_addr;
+    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+    #{'proxy_set_header  X-Forwarded-Proto https;' if ssl}
+    proxy_redirect  off;
+
     proxy_pass #{host.name}_app;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
   }
 }
 FILE
