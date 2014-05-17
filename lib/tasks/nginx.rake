@@ -34,7 +34,11 @@ server {
 
   #{ssl.join "\n  "}
 
-  root   #{host.deploy_to}/releases/current/public;
+  location /assets  {
+    alias #{host.deploy_to}/releases/current/public/assets;
+    expires max;
+    add_header  Cache-Control public;
+  }
 
   location / {
     proxy_pass #{host.name}_app;
