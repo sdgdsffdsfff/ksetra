@@ -28,6 +28,7 @@ load_env do |host|
 upstream #{host.name}_app {
   server unix://#{host.deploy_to}/releases/current/tmp/web.sock;
 }
+
 server {
   listen       #{port};
   server_name  #{host.domain};
@@ -41,13 +42,12 @@ server {
   }
 
   location / {
-    proxy_set_header  Host    $http_host;
+    proxy_set_header  Host $http_host;
     proxy_set_header  X-Real-IP $remote_addr;
     proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
     #{'proxy_set_header  X-Forwarded-Proto https;' if ssl}
     proxy_redirect  off;
-
-    proxy_pass #{host.name}_app;
+    proxy_pass http://#{host.name}_app;
 
   }
 }
