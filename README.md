@@ -8,6 +8,9 @@ Rails部署工具
     vi servers.yml #添加配置文件
     rake -T #查看任务
 
+#### 部署流程
+    安装ruby=>setup=>upload=>deploy
+
 #### Brahma项目部署 依赖
     apt-get install libmysqlclient-dev pwgen
 

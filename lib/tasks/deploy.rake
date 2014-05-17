@@ -52,14 +52,14 @@ load_env do |host|
             commands << "ln -sv #{release} #{current}"
             host.execute commands
           }, -> {
-            host.execute
+            host.execute puma_stop(release)
             clean_f.call
           })
         }, clean_f)
       end
 
       def puma_start(path)
-        "cd #{path} && puma -b 'unix://#{path}/tmp/web.sock' --pidfile #{path}/tmp/web.pid -e production -d config.ru"
+        "cd #{path} && puma -t 2 -b 'unix://#{path}/tmp/web.sock' --pidfile #{path}/tmp/web.pid -e production -d config.ru"
       end
 
       def puma_stop(path)
