@@ -26,22 +26,24 @@ load_env do |host|
       end
       puts <<FILE
 upstream #{host.name}_app {
-  server unix://#{host.deploy_to}/releases/current/tmp/web.sock;
+  server unix://#{host.deploy_to}/releases/current/tmp/web.sock fail_timeout=0;
 }
 
 server {
-  listen       #{port};
-  server_name  #{host.domain};
+  listen #{port};
+  server_name #{host.domain};
 
   #{ssl.join( "\n  ") if ssl}
 
-  location /assets  {
-    alias #{host.deploy_to}/releases/current/public/assets;
+  root #{host.deploy_to}/releases/current/public;
+  try_files $uri/index.html $uri @#{host.name}_app;
+
+  location ~* ^/(assets|3rd)/  {
     expires max;
     add_header  Cache-Control public;
   }
 
-  location / {
+  location @#{host.name}_app {
     proxy_set_header  Host $http_host;
     proxy_set_header  X-Real-IP $remote_addr;
     proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
