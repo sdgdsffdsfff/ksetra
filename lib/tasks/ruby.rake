@@ -16,7 +16,7 @@ load_env do |host|
                                 'git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build'
                             ]
                       )]
-          commands += rbenv
+          commands += rbenv host.env
           commands << "rbenv install -f -v  #{version}"
           commands << "rbenv global #{version}"
           commands << 'rbenv rehash'
@@ -31,7 +31,7 @@ load_env do |host|
       task :uninstall, :version do |_, args|
         version = args[:version]
         if version
-          commands = rbenv
+          commands = rbenv host.env
           commands << "rbenv uninstall -f #{version}"
           host.execute commands
         else
@@ -41,7 +41,7 @@ load_env do |host|
 
       desc "显示服务器[#{host.name}]上ruby版本"
       task :versions do
-        host.execute rbenv<< 'rbenv versions'
+        host.execute rbenv(host.env) << 'rbenv versions'
       end
 
     end
