@@ -1,7 +1,18 @@
 load_env do |host|
   if host.repository.start_with?('git@github.com:chonglou/')
     namespace host.name do
-      desc '更新brahma 3rd'
+
+      desc "在服务器#{host.name}上运行rake命令"
+      task :run, :cmd do |_, args|
+        cmd = args[:cmd]
+        if cmd
+          host.execute rbenv(host.env)<<"cd #{host.deploy_to}/releases/current && rake #{cmd}"
+        else
+          puts '无操作'
+        end
+      end
+
+      desc "更新服务器#{host.name}3rd资源"
       task '3rd' do
         tmp = '/tmp/brahma'
         commands = []
