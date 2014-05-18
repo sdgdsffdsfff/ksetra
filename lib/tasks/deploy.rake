@@ -65,8 +65,8 @@ load_env do |host|
       def puma_stop(path)
         [
             "kill -s SIGTERM  $(cat #{path}/tmp/web.pid)",
-            "rm #{path}/tmp/web.pid",
-            "rm #{path}/tmp/web.sock"
+            "rm -v #{path}/tmp/web.pid",
+            "rm -v #{path}/tmp/web.sock"
         ]
       end
 
