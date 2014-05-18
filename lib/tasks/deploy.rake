@@ -70,6 +70,11 @@ load_env do |host|
         ]
       end
 
+      desc "重启服务器[#{host.name}]应用"
+      task :restart do
+        host.execute ["kill -s SIGUSR2 $(cat #{host.deploy_to}/releases/current/tmp/web.pid)"]
+      end
+
       desc "列出服务器[#{host.name}]上最近可运行的版本"
       task :versions, :count do |_, args|
         args.with_defaults count: 7
