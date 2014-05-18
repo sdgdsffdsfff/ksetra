@@ -3,7 +3,7 @@ require_relative 'lib/utils'
 
 
 def load_env
-  YAML.load(File.open("config/servers.yml")).each do |name, args|
+  YAML.load(File.open('config/servers.yml')).each do |name, args|
     yield Host.new(name, args)
   end
 end

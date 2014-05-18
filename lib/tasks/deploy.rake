@@ -35,16 +35,16 @@ load_env do |host|
             "cp -a #{host.deploy_to}/scm/* #{release}",
         ]
         host.shared_paths.each { |p| commands << "ln -sv #{host.deploy_to}/shared/#{p} #{release}/#{p}" }
-        commands += rbenv
+        commands += rbenv host.env
         commands << "cd #{release} && bundle install"
         commands << "echo NEW VERSION: $(basename #{release})"
         host.execute commands
 
         confirm('版本更新成功，要继续么', -> {
-          commands = rbenv
-          commands << "cd #{release} && RAILS_ENV=production rake assets:precompile"
-          commands << "cd #{release} && RAILS_ENV=production rake db:migrate"
-          commands << puma_start(release)
+          commands = rbenv host.env
+          commands << "cd #{release} && rake assets:precompile"
+          commands << "cd #{release} && rake db:migrate"
+          commands << puma_start(release, host.env)
           host.execute commands
           confirm('启动成功，要继续么', -> {
             current = "#{host.deploy_to}/releases/current"
@@ -58,8 +58,8 @@ load_env do |host|
         }, clean_f)
       end
 
-      def puma_start(path)
-        "cd #{path} && puma -t 2 -b 'unix://#{path}/tmp/web.sock' --pidfile #{path}/tmp/web.pid -e production -d config.ru"
+      def puma_start(path, env)
+        "cd #{path} && puma -t 2 -b 'unix://#{path}/tmp/web.sock' --pidfile #{path}/tmp/web.pid -e #{env} -d config.ru"
       end
 
       def puma_stop(path)

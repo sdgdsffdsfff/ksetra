@@ -8,8 +8,8 @@ def confirm(message, yes=nil, no=nil)
   yesno?(message) ? (yes.call if yes) : (no.call if no)
 end
 
-def rbenv
-  ['export PATH=$HOME/.rbenv/bin:$PATH', 'eval "$(rbenv init -)"']
+def rbenv(env)
+  ['export PATH=$HOME/.rbenv/bin:$PATH', 'eval "$(rbenv init -)"', "export RAILS_ENV=#{env}"]
 end
 
 def sudo(command, user='root', password=nil)
@@ -48,7 +48,7 @@ end
 
 
 class Host
-  attr_reader :name, :domain, :repository, :deploy_to, :branch, :shared_paths, :user
+  attr_reader :name, :domain, :repository, :deploy_to, :branch, :shared_paths, :user, :env
 
   def initialize(name, args)
     @name = name
@@ -57,6 +57,7 @@ class Host
     @deploy_to = args['deploy_to'] || "/var/www/#{domain}"
     @branch = args['branch'] || 'master'
     @shared_paths = args['shared_paths']||%w(config/database.yml log)
+    @env = args['env'] || 'production'
 
 
     ssh = args.fetch('ssh')

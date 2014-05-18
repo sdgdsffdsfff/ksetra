@@ -8,3 +8,4 @@ hostname: #主机名 可以有多台 但是全局唯一
   repository: 'git@github.com/example.git'
   branch: 'master'
   shared_paths: ['log', 'config/database.yml']
+  env: 'production'
