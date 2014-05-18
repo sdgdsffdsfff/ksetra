@@ -25,7 +25,7 @@ load_env do |host|
     task :upgrade do
       tmp = '/tmp/brahma'
       commands = []
-      commands += rbenv
+      commands += rbenv host.env
       commands << path?("#{tmp}/utils", [
           "cd #{tmp}/utils && git pull"
       ], [
