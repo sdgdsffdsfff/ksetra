@@ -64,7 +64,7 @@ class Host
     @ssh={
         user: ssh['user']||'root',
         host: ssh.fetch('host'),
-        port: ssh.has_key?('port') ? ssh['port'].to_i : 22
+        port: ssh.key?('port') ? ssh['port'].to_i : 22
     }
     @user = @ssh.fetch :user
   end
