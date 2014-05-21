@@ -11,9 +11,6 @@ Rails部署工具
 #### 部署流程
     安装ruby=>setup=>upload=>deploy
 
-#### Brahma项目部署 依赖
-    apt-get install libmysqlclient-dev pwgen
-
 ## 常见问题
 
 ### git ssh 证书问题
