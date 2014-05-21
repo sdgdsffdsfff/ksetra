@@ -33,7 +33,7 @@ server {
   listen #{port};
   server_name #{host.domain};
 
-  #{ssl.join( "\n  ") if ssl}
+  #{ssl.join("\n  ") if ssl}
 
   root #{host.deploy_to}/releases/current/public;
   try_files $uri/index.html $uri @#{host.name}_app;
