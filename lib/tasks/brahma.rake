@@ -1,7 +1,6 @@
 load_env do |host|
   if host.repository.start_with?('git@github.com:chonglou/')
     namespace host.name do
-
       desc "在服务器#{host.name}上运行rake命令"
       task :run, :cmd do |_, args|
         cmd = args[:cmd]
@@ -12,20 +11,24 @@ load_env do |host|
         end
       end
 
-      desc "更新服务器#{host.name}3rd资源"
-      task '3rd' do
-        tmp = '/tmp/brahma'
-        commands = []
-        commands << path?("#{tmp}/3rd", [
-            "cd #{tmp}/3rd && git pull"
-        ], [
-                              "git clone git@github.com:chonglou/3rd.git #{tmp}/3rd"
-                          ])
-        path = "#{host.deploy_to}/releases/current/public/3rd"
-        commands << path?(path, ["rm -r #{path}"])
-        commands << "mkdir -p #{path}"
-        commands << "cp -r #{tmp}/3rd/* #{path}"
-        host.execute commands
+      namespace :web do
+        desc "更新服务器#{host.name}3rd资源"
+        task '3rd' do
+          tmp = '/tmp/brahma'
+          commands = []
+          commands << path?("#{tmp}/3rd", [
+              "cd #{tmp}/3rd && git pull"
+          ], [
+                                "git clone git@github.com:chonglou/3rd.git #{tmp}/3rd"
+                            ])
+          path = "#{host.deploy_to}/releases/current/public/3rd"
+          commands << path?(path, ["rm -r #{path}"])
+          commands << "mkdir -p #{path}"
+          commands << "cp -r #{tmp}/3rd/* #{path}"
+          commands += rbenv(host.env)
+          commands << "cd #{host.deploy_to}/releases/current && rake app:brahma:web:seo"
+          host.execute commands
+        end
       end
     end
   end
