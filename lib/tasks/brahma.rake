@@ -26,7 +26,7 @@ load_env do |host|
           commands << "mkdir -p #{path}"
           commands << "cp -r #{tmp}/3rd/* #{path}"
           commands += rbenv(host.env)
-          commands << "cd #{host.deploy_to}/releases/current && rake app:brahma:web:seo"
+          commands << "cd #{host.deploy_to}/releases/current && rake brahma:web:seo"
           host.execute commands
         end
       end
