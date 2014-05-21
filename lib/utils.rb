@@ -4,6 +4,7 @@ def yesno?(message)
   require 'highline/import'
   ask("#{message}?(y/n)  ") { |q| q.default = 'n' } == 'y'
 end
+
 def confirm(message, yes=nil, no=nil)
   yesno?(message) ? (yes.call if yes) : (no.call if no)
 end
